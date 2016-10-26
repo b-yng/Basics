@@ -26,19 +26,50 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 - (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation *)invocation completionHandler:(void (^)(NSError * _Nullable nilOrError))completionHandler {
     
     XCSourceTextBuffer *buffer = invocation.buffer;
-    BYSourceInfo *sourceInfo = [[BYSourceInfo alloc] init];
-    sourceInfo.contentUTI = buffer.contentUTI;
+    if (buffer.lines.count == 0) {
+        completionHandler(nil);
+        return;
+    }
     
-    // check destination language
-    if (sourceInfo.sourceLanguage == BYSourceLanguageUnsupported) {
+    // get command
+    NSString *commandName = [invocation.commandIdentifier pathExtension];
+    
+    if (buffer.selections.count == 0) {
+        completionHandler([self errorNoSelection]);
+        return;
+    }
+    
+    // TODO: cleanup for scale
+    if ([commandName isEqualToString:BYCommandDeleteLines]) {
+        
+        // delete selection
+        for (XCSourceTextRange *selection in buffer.selections) {
+            NSInteger startLine = selection.start.line;
+            NSRange deleteRange = NSMakeRange(startLine, MIN(selection.end.line + 1 - startLine, buffer.lines.count - startLine));
+            [buffer.lines removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:deleteRange]];
+        }
+        
+        // clear selection
+        XCSourceTextRange *firstSelection = buffer.selections.firstObject;
+        firstSelection.start = XCSourceTextPositionMake(firstSelection.start.line, 0);
+        firstSelection.end = firstSelection.start;
+        [buffer.selections removeAllObjects];
+        [buffer.selections addObject:firstSelection];
+        
         completionHandler(nil);
         return;
     }
     
     // get selection
     XCSourceTextRange *selection = buffer.selections.firstObject;
-    if (selection == nil) {
-        completionHandler([self errorNoSelection]);
+
+    
+    BYSourceInfo *sourceInfo = [[BYSourceInfo alloc] init];
+    sourceInfo.contentUTI = buffer.contentUTI;
+    
+    // check destination language
+    if (sourceInfo.sourceLanguage == BYSourceLanguageUnsupported) {
+        completionHandler(nil);
         return;
     }
     
@@ -80,7 +111,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     
     NSMutableArray<NSString*> *lines = nil;
     
-    NSString *commandName = [invocation.commandIdentifier pathExtension];
+    
     if ([commandName isEqualToString:BYCommandIsEquals]) {
         lines = [textGenerator generateIsEquals:properties];
         [lines addObject:@"\n"];
