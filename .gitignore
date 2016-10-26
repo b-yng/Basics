@@ -5,3 +5,4 @@ xcuserdata/
 *.ipa
 *.xccheckout
 .idea/
+*.xcuserstate
