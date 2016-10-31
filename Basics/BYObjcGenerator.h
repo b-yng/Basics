@@ -12,6 +12,8 @@
 
 @interface BYObjcGenerator : NSObject <BYGenerator>
 
-@property (nonatomic) NSUInteger tabWidth;
+@property (nonatomic) NSInteger tabWidth;
+
+- (instancetype)initWithTabWidth:(NSInteger)tabWidth;
 
 @end

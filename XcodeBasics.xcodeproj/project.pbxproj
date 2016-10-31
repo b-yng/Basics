@@ -19,6 +19,7 @@
 		EB0BF6101DC104780031A4A7 /* BYProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF60C1DC104780031A4A7 /* BYProperty.m */; };
 		EB0BF6111DC104780031A4A7 /* BYSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */; };
 		EB0BF6141DC104880031A4A7 /* NSString+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF6131DC104880031A4A7 /* NSString+Tools.m */; };
+		EBFF87311DC6BC9C00CB80FD /* BYCommandInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,8 @@
 		EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYSourceInfo.m; sourceTree = "<group>"; };
 		EB0BF6121DC104880031A4A7 /* NSString+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Tools.h"; sourceTree = "<group>"; };
 		EB0BF6131DC104880031A4A7 /* NSString+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Tools.m"; sourceTree = "<group>"; };
+		EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYCommandInfo.h; sourceTree = "<group>"; };
+		EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYCommandInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +145,8 @@
 		EB0BF5ED1DC1041F0031A4A7 /* Basics */ = {
 			isa = PBXGroup;
 			children = (
+				EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */,
+				EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */,
 				EB0BF6081DC104780031A4A7 /* BYGenerator.h */,
 				EB0BF6091DC104780031A4A7 /* BYObjcGenerator.h */,
 				EB0BF60A1DC104780031A4A7 /* BYObjcGenerator.m */,
@@ -281,6 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBFF87311DC6BC9C00CB80FD /* BYCommandInfo.m in Sources */,
 				EB0BF6111DC104780031A4A7 /* BYSourceInfo.m in Sources */,
 				EB0BF6141DC104880031A4A7 /* NSString+Tools.m in Sources */,
 				EB0BF60F1DC104780031A4A7 /* BYObjcGenerator.m in Sources */,
@@ -478,6 +484,7 @@
 				EB0BF5E41DC103FF0031A4A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EB0BF5FA1DC1041F0031A4A7 /* Build configuration list for PBXNativeTarget "Basics" */ = {
 			isa = XCConfigurationList;
@@ -486,6 +493,7 @@
 				EB0BF5FC1DC1041F0031A4A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

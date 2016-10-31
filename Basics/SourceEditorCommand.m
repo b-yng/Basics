@@ -9,6 +9,7 @@
 #import "SourceEditorCommand.h"
 
 #import <AppKit/AppKit.h>
+#import "BYCommandInfo.h"
 #import "BYGenerator.h"
 #import "BYProperty.h"
 #import "BYObjcGenerator.h"
@@ -24,133 +25,183 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 @implementation SourceEditorCommand
 
 - (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation *)invocation completionHandler:(void (^)(NSError * _Nullable nilOrError))completionHandler {
-    
     XCSourceTextBuffer *buffer = invocation.buffer;
     if (buffer.lines.count == 0) {
         completionHandler(nil);
         return;
     }
     
-    // get command
-    NSString *commandName = [invocation.commandIdentifier pathExtension];
-    
     if (buffer.selections.count == 0) {
         completionHandler([self errorNoSelection]);
         return;
     }
     
-    // TODO: cleanup for scale
-    if ([commandName isEqualToString:BYCommandDeleteLines]) {
-        
-        // delete selection
-        for (XCSourceTextRange *selection in buffer.selections) {
-            NSInteger startLine = selection.start.line;
-            NSRange deleteRange = NSMakeRange(startLine, MIN(selection.end.line + 1 - startLine, buffer.lines.count - startLine));
-            [buffer.lines removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:deleteRange]];
-        }
-        
-        // clear selection
-        XCSourceTextRange *firstSelection = buffer.selections.firstObject;
-        firstSelection.start = XCSourceTextPositionMake(firstSelection.start.line, 0);
-        firstSelection.end = firstSelection.start;
-        [buffer.selections removeAllObjects];
-        [buffer.selections addObject:firstSelection];
-        
-        completionHandler(nil);
-        return;
+    // get command
+    NSString *commandName = [invocation.commandIdentifier pathExtension];
+    BYCommand command = [BYCommandInfo commandFromName:commandName];
+    
+    switch (command) {
+        case BYCommandDeleteLines:
+            [self handleDeleteCommand:buffer completion:completionHandler];
+            break;
+        case BYCommandIsEquals:
+            [self handleIsEqualsCommand:buffer completion:completionHandler];
+            break;
+        case BYCommandNSCopying:
+            [self handleNSCopyingCommand:buffer completion:completionHandler];
+            break;
+        case BYCommandInterface:
+            break;
+    }
+}
+
+#pragma mark - Command Handlers
+
+- (void)handleDeleteCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+    // delete selection
+    for (XCSourceTextRange *selection in buffer.selections) {
+        NSInteger startLine = selection.start.line;
+        NSRange deleteRange = NSMakeRange(startLine, MIN(selection.end.line + 1 - startLine, buffer.lines.count - startLine));
+        [buffer.lines removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:deleteRange]];
     }
     
-    // get selection
-    XCSourceTextRange *selection = buffer.selections.firstObject;
+    // clear selection
+    XCSourceTextRange *firstSelection = buffer.selections.firstObject;
+    firstSelection.start = XCSourceTextPositionMake(firstSelection.start.line, 0);
+    firstSelection.end = firstSelection.start;
+    [buffer.selections removeAllObjects];
+    [buffer.selections addObject:firstSelection];
+    
+    completionHandler(nil);
+}
 
-    
-    BYSourceInfo *sourceInfo = [[BYSourceInfo alloc] init];
-    sourceInfo.contentUTI = buffer.contentUTI;
-    
-    // check destination language
+- (void)handleIsEqualsCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+    // get source info
+    BYSourceInfo *sourceInfo = [[BYSourceInfo alloc] initWithContentUTI:buffer.contentUTI];
     if (sourceInfo.sourceLanguage == BYSourceLanguageUnsupported) {
-        completionHandler(nil);
+        completionHandler([self errorUnsupportedLanguage]);
         return;
     }
     
     // get content from pasteboard
-    NSString *copiedContent = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
-    if (copiedContent == nil || copiedContent.length == 0) {
-        completionHandler([self errorNoCopiedContent]);
+    NSString *copiedContent = [self contentFromPasteboard];
+    
+    // parse properties
+    NSArray<BYProperty*> *properties = [self propertiesFromText:copiedContent];
+    
+    // generate text from properties
+    id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
+    
+    NSMutableArray<NSString*> *lines = [textGenerator generateIsEquals:properties];
+    [lines addObject:@"\n"];
+    [lines addObjectsFromArray:[textGenerator generateHash:properties]];
+    
+    // insert lines into buffer
+    [self insertLinesIntoBuffer:buffer lines:lines];
+    
+    completionHandler(nil);
+}
+
+- (void)handleNSCopyingCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+    // get source info
+    BYSourceInfo *sourceInfo = [[BYSourceInfo alloc] initWithContentUTI:buffer.contentUTI];
+    if (sourceInfo.sourceLanguage == BYSourceLanguageUnsupported) {
+        completionHandler([self errorUnsupportedLanguage]);
         return;
     }
     
+    // get content from pasteboard
+    NSString *copiedContent = [self contentFromPasteboard];
+    
     // parse properties
+    NSArray<BYProperty*> *properties = [self propertiesFromText:copiedContent];
+    
+    // generate text from properties
+    id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
+    
+    // get class name
+    NSString *className = [self classNameFromText:buffer.completeBuffer sourceLanguage:sourceInfo.sourceLanguage];
+    if (className == nil) {
+        completionHandler([self errorClassNameNotFound]);
+        return;
+    }
+    
+    // generate text from properties and class name
+    NSMutableArray<NSString*> *lines = [textGenerator generateCopyWithZone:properties className:className];
+    
+    // insert lines into buffer
+    [self insertLinesIntoBuffer:buffer lines:lines];
+    
+    completionHandler(nil);
+}
+
+#pragma mark - Helpers
+
+- (NSArray<BYProperty*> *)propertiesFromText:(NSString *)text {
     NSMutableArray<BYProperty*> *properties = [[NSMutableArray alloc] init];
     
-    [copiedContent enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
-        BYProperty *property;
-        
-        if (sourceInfo.sourceLanguage == BYSourceLanguageObjc) {
-            property = [BYProperty propertyFromObjcLine:line];
-        }
-        else if (sourceInfo.sourceLanguage == BYSourceLanguageSwift) {
-            // TODO: swift
-        }
-        
+    if (text == nil || text.length == 0) {
+        return properties;
+    }
+    
+    [text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
+        BYProperty *property = [BYProperty propertyFromObjcLine:line];
         if (property != nil) {
             [properties addObject:property];
         }
     }];
     
-    id<BYGenerator> textGenerator;
-    
-    if (sourceInfo.sourceLanguage == BYSourceLanguageObjc) {
-        BYObjcGenerator *objcGenerator = [[BYObjcGenerator alloc] init];
-        objcGenerator.tabWidth = buffer.tabWidth;
-        textGenerator = objcGenerator;
-    }
-    else if (sourceInfo.sourceLanguage == BYSourceLanguageSwift) {
-        // TODO: swift
+    return properties;
+}
+
+- (NSString *)classNameFromText:(NSString *)text sourceLanguage:(BYSourceLanguage)sourceLanguage {
+    if (text == nil || text.length == 0) {
+        return nil;
     }
     
-    NSMutableArray<NSString*> *lines = nil;
+    NSString *className = nil;
     
-    
-    if ([commandName isEqualToString:BYCommandIsEquals]) {
-        lines = [textGenerator generateIsEquals:properties];
-        [lines addObject:@"\n"];
-        [lines addObjectsFromArray:[textGenerator generateHash:properties]];
-    }
-    else if ([commandName isEqualToString:BYCommandNSCopying]) {
-        
-        // get class name
-        NSScanner *scanner = [NSScanner scannerWithString:buffer.completeBuffer];
+    if (sourceLanguage == BYSourceLanguageObjc) {
+        NSScanner *scanner = [NSScanner scannerWithString:text];
         BOOL foundImplementation = [scanner scanUpToString:@"@implementation" intoString:nil];
         if (!foundImplementation) {
-            completionHandler([self errorClassNameNotFound]);
-            return;
+            return nil;
         }
         
         [scanner scanString:@"@implementation" intoString:nil];
         
-        NSString *className;
         BOOL foundClassName = [scanner scanCharactersFromSet:[NSCharacterSet alphanumericCharacterSet] intoString:&className];
         if (!foundClassName) {
-            completionHandler([self errorClassNameNotFound]);
-            return;
+            return nil;
         }
+    }
+    else if (sourceLanguage == BYSourceLanguageSwift) {
         
-        lines = [textGenerator generateCopyWithZone:properties className:className];
     }
     
-    if (lines == nil) {
-        completionHandler([self errorCommandFailed]);
-        return;
+    return className;
+}
+
+- (NSString *)contentFromPasteboard {
+    return [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
+}
+
+- (id<BYGenerator>)textGeneratorForSourceLanguage:(BYSourceLanguage)sourceLanguage tabWidth:(NSInteger)tabWidth {
+    id<BYGenerator> textGenerator = nil;
+    if (sourceLanguage == BYSourceLanguageObjc) {
+        textGenerator = [[BYObjcGenerator alloc] initWithTabWidth:tabWidth];
     }
-    
-    // insert lines into buffer
-    NSInteger offset = selection.end.line;
+    else if (sourceLanguage == BYSourceLanguageSwift) {
+        
+    }
+    return textGenerator;
+}
+
+- (void)insertLinesIntoBuffer:(XCSourceTextBuffer *)buffer lines:(NSArray<NSString*> *)lines {
+    NSInteger offset = buffer.selections.firstObject.end.line;
     for (NSInteger i = 0; i < lines.count; i++) {
         [buffer.lines insertObject:[lines objectAtIndex:i] atIndex:offset + i];
     }
-    
-    completionHandler(nil);
 }
 
 #pragma mark - Errors
@@ -160,11 +211,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 }
 
 - (NSError *)errorNoSelection {
-    return [self errorWithCode:1 message:NSLocalizedString(@"No selection", @"No selection")];
-}
-
-- (NSError *)errorNoCopiedContent {
-    return [self errorWithCode:2 message:NSLocalizedString(@"No copied content", @"No copied content")];
+    return [self errorWithCode:2 message:NSLocalizedString(@"No selection", @"No selection")];
 }
 
 - (NSError *)errorCommandFailed {
@@ -177,10 +224,6 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 
 - (NSError *)errorWithCode:(NSInteger)code message:(NSString *)message {
     return [[NSError alloc] initWithDomain:GenErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey : message}];
-}
-
-- (NSString *)indentWithWidth:(NSUInteger)width {
-    return [@"" stringByPaddingToLength:width withString:@" " startingAtIndex:0];
 }
 
 @end

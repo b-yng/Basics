@@ -18,6 +18,15 @@
 
 @implementation BYObjcGenerator
 
+- (instancetype)initWithTabWidth:(NSInteger)tabWidth {
+    self = [super init];
+    if (!self) return nil;
+    
+    self.tabWidth = tabWidth;
+    
+    return self;
+}
+
 #pragma mark - Public
 
 - (NSMutableArray<NSString*> *)generateIsEquals:(NSArray<BYProperty*> *)properties {
@@ -169,7 +178,7 @@
 
 #pragma mark - Public setters
 
-- (void)setTabWidth:(NSUInteger)tabWidth {
+- (void)setTabWidth:(NSInteger)tabWidth {
     _tabWidth = tabWidth;
     self.indent = [@" " repeat:tabWidth];
 }

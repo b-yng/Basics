@@ -10,30 +10,31 @@
 
 @implementation BYSourceInfo
 
-- (instancetype)init {
+- (instancetype)initWithContentUTI:(NSString *)contentUTI {
     self = [super init];
     if (!self) return nil;
     
-    _sourceLanguage = BYSourceLanguageUnsupported;
+    _sourceLanguage = [self sourceLanguageFromContentUTI:contentUTI];
     
     return self;
 }
 
-- (void)setContentUTI:(NSString *)contentUTI {
-    _contentUTI = contentUTI;
-    
+- (BYSourceLanguage)sourceLanguageFromContentUTI:(NSString *)contentUTI {
+    BYSourceLanguage sourceLanguage = BYSourceLanguageUnsupported;
     CFStringRef contentUTIRef = (__bridge CFStringRef)contentUTI;
     
     if (UTTypeEqual(contentUTIRef, kUTTypeObjectiveCSource) ||  // .m
         UTTypeEqual(contentUTIRef, kUTTypeCHeader)) {           // .h
-        _sourceLanguage = BYSourceLanguageObjc;
+        sourceLanguage = BYSourceLanguageObjc;
     }
     else if (UTTypeEqual(contentUTIRef, kUTTypeSwiftSource)) {  // .swift
-        _sourceLanguage = BYSourceLanguageSwift;
+        sourceLanguage = BYSourceLanguageSwift;
     }
     else {
-        _sourceLanguage = BYSourceLanguageUnsupported;
+        sourceLanguage = BYSourceLanguageUnsupported;
     }
+    
+    return sourceLanguage;
 }
 
 @end

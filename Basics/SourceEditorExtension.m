@@ -8,25 +8,24 @@
 
 #import "SourceEditorExtension.h"
 @import AppKit;
+#import "BYCommandInfo.h"
 
-NSString * const BYCommandIdPrefix = @"com.young.XcodeBasics";
-NSString * const BYCommandIsEquals = @"isEquals";
-NSString * const BYCommandNSCopying = @"NSCopying";
-NSString * const BYCommandDeleteLines = @"Delete Lines";
+static NSString * const BYCommandIdPrefix = @"com.young.XcodeBasics";
 
 @implementation SourceEditorExtension
 
 #pragma mark - XCSourceEditorExtension
 
 - (NSArray <NSDictionary <XCSourceEditorCommandDefinitionKey, id> *> *)commandDefinitions {
-    return @[[self commandWithName:BYCommandIsEquals],
-             [self commandWithName:BYCommandNSCopying],
-             [self commandWithName:BYCommandDeleteLines]];
+    return @[[self definitionForCommand:BYCommandIsEquals],
+             [self definitionForCommand:BYCommandNSCopying],
+             [self definitionForCommand:BYCommandDeleteLines]];
 }
 
 #pragma mark - Helpers
 
-- (NSDictionary<XCSourceEditorCommandDefinitionKey, id> *)commandWithName:(NSString *)name {
+- (NSDictionary<XCSourceEditorCommandDefinitionKey, id> *)definitionForCommand:(BYCommand)command {
+    NSString *name = [BYCommandInfo nameFromCommand:command];
     return @{ XCSourceEditorCommandClassNameKey : @"SourceEditorCommand",
               XCSourceEditorCommandIdentifierKey : [NSString stringWithFormat:@"%@.%@", BYCommandIdPrefix, name],
               XCSourceEditorCommandNameKey : name };

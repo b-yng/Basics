@@ -17,7 +17,8 @@ typedef NS_ENUM(NSUInteger, BYSourceLanguage) {
 
 @interface BYSourceInfo : NSObject
 
-@property (nonatomic) NSString *contentUTI;
-@property (nonatomic) BYSourceLanguage sourceLanguage;
+@property (nonatomic, readonly) BYSourceLanguage sourceLanguage;
+
+- (instancetype)initWithContentUTI:(NSString *)contentUTI; 
 
 @end
