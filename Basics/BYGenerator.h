@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class BYProperty;
+@class BYMethod;
 
 @protocol BYGenerator <NSObject>
 
@@ -17,5 +18,7 @@
 - (NSMutableArray<NSString*> *)generateHash:(NSArray<BYProperty*> *)properties;
 
 - (NSMutableArray<NSString*> *)generateCopyWithZone:(NSArray<BYProperty*> *)properties className:(NSString *)className;
+
+- (NSMutableArray<NSString*> *)generateMethodSignatures:(NSArray<BYMethod*> *)methods;
 
 @end

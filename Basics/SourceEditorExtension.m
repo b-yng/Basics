@@ -19,7 +19,8 @@ static NSString * const BYCommandIdPrefix = @"com.young.XcodeBasics";
 - (NSArray <NSDictionary <XCSourceEditorCommandDefinitionKey, id> *> *)commandDefinitions {
     return @[[self definitionForCommand:BYCommandIsEquals],
              [self definitionForCommand:BYCommandNSCopying],
-             [self definitionForCommand:BYCommandDeleteLines]];
+             [self definitionForCommand:BYCommandDeleteLines],
+             [self definitionForCommand:BYCommandMethodSignature]];
 }
 
 #pragma mark - Helpers
@@ -32,3 +33,4 @@ static NSString * const BYCommandIdPrefix = @"com.young.XcodeBasics";
 }
 
 @end
+

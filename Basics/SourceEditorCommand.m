@@ -11,8 +11,8 @@
 #import <AppKit/AppKit.h>
 #import "BYCommandInfo.h"
 #import "BYGenerator.h"
-#import "BYProperty.h"
 #import "BYObjcGenerator.h"
+#import "BYObjcParser.h"
 #import "BYSourceInfo.h"
 #import "NSString+Tools.h"
 #import "SourceEditorExtension.h"
@@ -42,7 +42,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     
     switch (command) {
         case BYCommandDeleteLines:
-            [self handleDeleteCommand:buffer completion:completionHandler];
+            [self handleDeleteLinesCommand:buffer completion:completionHandler];
             break;
         case BYCommandIsEquals:
             [self handleIsEqualsCommand:buffer completion:completionHandler];
@@ -50,14 +50,17 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
         case BYCommandNSCopying:
             [self handleNSCopyingCommand:buffer completion:completionHandler];
             break;
-        case BYCommandInterface:
+        case BYCommandMethodSignature:
+            [self handleMethodSignatureCommand:buffer completion:completionHandler];
+            break;
+        case BYCommandUnknown:
             break;
     }
 }
 
 #pragma mark - Command Handlers
 
-- (void)handleDeleteCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+- (void)handleDeleteLinesCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
     // delete selection
     for (XCSourceTextRange *selection in buffer.selections) {
         NSInteger startLine = selection.start.line;
@@ -116,9 +119,6 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     // parse properties
     NSArray<BYProperty*> *properties = [self propertiesFromText:copiedContent];
     
-    // generate text from properties
-    id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
-    
     // get class name
     NSString *className = [self classNameFromText:buffer.completeBuffer sourceLanguage:sourceInfo.sourceLanguage];
     if (className == nil) {
@@ -127,7 +127,33 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     }
     
     // generate text from properties and class name
-    NSMutableArray<NSString*> *lines = [textGenerator generateCopyWithZone:properties className:className];
+    id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
+    NSArray<NSString*> *lines = [textGenerator generateCopyWithZone:properties className:className];
+    
+    // insert lines into buffer
+    [self insertLinesIntoBuffer:buffer lines:lines];
+    
+    completionHandler(nil);
+}
+
+- (void)handleMethodSignatureCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+    // get source info
+    BYSourceInfo *sourceInfo = [[BYSourceInfo alloc] initWithContentUTI:buffer.contentUTI];
+    if (sourceInfo.sourceLanguage == BYSourceLanguageUnsupported ||
+        sourceInfo.sourceLanguage == BYSourceLanguageSwift) {
+        completionHandler([self errorUnsupportedLanguage]);
+        return;
+    }
+    
+    // get content from pasteboard
+    NSString *copiedContent = [self contentFromPasteboard];
+    
+    // parse methods
+    NSArray<BYMethod*> *methods = [self methodsFromText:copiedContent];
+    
+    // generate text from methods
+    id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
+    NSArray<NSString*> *lines = [textGenerator generateMethodSignatures:methods];
     
     // insert lines into buffer
     [self insertLinesIntoBuffer:buffer lines:lines];
@@ -139,19 +165,35 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 
 - (NSArray<BYProperty*> *)propertiesFromText:(NSString *)text {
     NSMutableArray<BYProperty*> *properties = [[NSMutableArray alloc] init];
-    
     if (text == nil || text.length == 0) {
         return properties;
     }
     
     [text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
-        BYProperty *property = [BYProperty propertyFromObjcLine:line];
+        BYProperty *property = [BYObjcParser parsePropertyFromLine:line];
         if (property != nil) {
             [properties addObject:property];
         }
     }];
     
     return properties;
+}
+
+- (NSArray<BYMethod*> *)methodsFromText:(NSString *)text {
+    NSMutableArray<BYMethod*> *methods = [[NSMutableArray alloc] init];
+    if (text == nil || text.length == 0) {
+        return methods;
+    }
+    
+    // TODO: multiline support. Pass in scanner
+    [text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
+        BYMethod *method = [BYObjcParser parseMethodFromLine:line];
+        if (method != nil) {
+            [methods addObject:method];
+        }
+    }];
+    
+    return methods;
 }
 
 - (NSString *)classNameFromText:(NSString *)text sourceLanguage:(BYSourceLanguage)sourceLanguage {

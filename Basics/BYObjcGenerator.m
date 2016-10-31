@@ -7,7 +7,6 @@
 //
 
 #import "BYObjcGenerator.h"
-#import "BYProperty.h"
 #import "NSString+Tools.h"
 
 #define IND(_text, _indent) [self indent:(_text) by:(_indent)]
@@ -56,7 +55,7 @@
         }
         
         NSString *name = property.name;
-        if (property.primitive) {
+        if (property.type.primitive) {
             [lineText appendString:[NSString stringWithFormat:@"_%@ == [object %@]", name, name]];
         }
         else {
@@ -98,7 +97,7 @@
         }
         
         NSString *name = property.name;
-        if (property.primitive) {
+        if (property.type.primitive) {
             // wrap primitives in NSNumber for hash method
             [lineText appendString:[NSString stringWithFormat:@"@(_%@).hash", name]];
         }
@@ -139,25 +138,27 @@
         
         NSString *name = property.name;
         
-        if (property.primitive) {
+        if (property.type.primitive) {
             NSString *copyLine = [NSString stringWithFormat:@"clone.%@ = _%@;", name, name];
             [lines addObject:IND(copyLine, 1)];
         }
         else {
+            Class typeClass = property.type.typeClass;
+            
             // deep copy collections
-            if (property.typeClass != nil && property.typeClass == [NSArray class]) {
+            if (typeClass != nil && typeClass == [NSArray class]) {
                 [lines addObject:[self indent:[NSString stringWithFormat:@"if (_%@ != nil)", name] by:1]];
                 
                 NSString *copyLine = [NSString stringWithFormat:@"clone.%@ = [[NSArray alloc] initWithArray:_%@ copyItems:YES];", name, name];
                 [lines addObject:IND(copyLine, 2)];
             }
-            else if (property.typeClass != nil && property.typeClass == [NSSet class]) {
+            else if (typeClass != nil && typeClass == [NSSet class]) {
                 [lines addObject:[self indent:[NSString stringWithFormat:@"if (_%@ != nil)", name] by:1]];
                 
                 NSString *copyLine = [NSString stringWithFormat:@"clone.%@ = [[NSSet alloc] initWithSet:_%@ copyItems:YES];", name, name];
                 [lines addObject:IND(copyLine, 2)];
             }
-            else if (property.typeClass != nil && property.typeClass == [NSDictionary class]) {
+            else if (typeClass != nil && typeClass == [NSDictionary class]) {
                 [lines addObject:[self indent:[NSString stringWithFormat:@"if (_%@ != nil)", name] by:1]];
                 
                 NSString *copyLine = [NSString stringWithFormat:@"clone.%@ = [[NSDictionary alloc] initWithDictionary:_%@ copyItems:YES];", name, name];
@@ -172,6 +173,25 @@
     
     [lines addObject:IND(@"return clone;", 1)];
     [lines addObject:@"}"];
+    
+    return lines;
+}
+
+- (NSMutableArray<NSString*> *)generateMethodSignatures:(NSArray<BYMethod*> *)methods {
+    __block NSMutableArray *lines = [[NSMutableArray alloc] init];
+    
+    [methods enumerateObjectsUsingBlock:^(BYMethod * _Nonnull method, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL addNewlinePrefix = idx > 0;
+        NSString *closedSignature;
+        
+        if (addNewlinePrefix) {
+            closedSignature = [NSString stringWithFormat:@"\n%@;", method.signature];
+        } else {
+            closedSignature = [NSString stringWithFormat:@"%@;", method.signature];
+        }
+        
+        [lines addObject:closedSignature];
+    }];
     
     return lines;
 }

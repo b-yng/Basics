@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "BYGenerator.h"
-@class BYProperty;
+#import "BYProperty.h"
+#import "BYMethod.h"
 
 @interface BYObjcGenerator : NSObject <BYGenerator>
 

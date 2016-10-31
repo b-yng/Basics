@@ -14,27 +14,26 @@
     self = [super init];
     if (!self) return nil;
     
-    _sourceLanguage = [self sourceLanguageFromContentUTI:contentUTI];
-    
-    return self;
-}
-
-- (BYSourceLanguage)sourceLanguageFromContentUTI:(NSString *)contentUTI {
-    BYSourceLanguage sourceLanguage = BYSourceLanguageUnsupported;
     CFStringRef contentUTIRef = (__bridge CFStringRef)contentUTI;
     
-    if (UTTypeEqual(contentUTIRef, kUTTypeObjectiveCSource) ||  // .m
-        UTTypeEqual(contentUTIRef, kUTTypeCHeader)) {           // .h
-        sourceLanguage = BYSourceLanguageObjc;
+    if (UTTypeEqual(contentUTIRef, kUTTypeObjectiveCSource)) {  // .m
+        _sourceLanguage = BYSourceLanguageObjc;
+        _fileType = BYSourceFileTypeImplementation;
+    }
+    else if (UTTypeEqual(contentUTIRef, kUTTypeCHeader)) {      // .h
+        _sourceLanguage = BYSourceLanguageObjc;
+        _fileType = BYSourceFileTypeHeader;
     }
     else if (UTTypeEqual(contentUTIRef, kUTTypeSwiftSource)) {  // .swift
-        sourceLanguage = BYSourceLanguageSwift;
+        _sourceLanguage = BYSourceLanguageSwift;
+        _fileType = BYSourceFileTypeImplementation;
     }
     else {
-        sourceLanguage = BYSourceLanguageUnsupported;
+        _sourceLanguage = BYSourceLanguageUnsupported;
+        _fileType = BYSourceFileTypeUnknown;
     }
     
-    return sourceLanguage;
+    return self;
 }
 
 @end

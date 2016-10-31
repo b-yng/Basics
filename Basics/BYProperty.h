@@ -7,15 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BYType.h"
 
 @interface BYProperty : NSObject
 
 @property (nonatomic) NSString *name;
-@property (nonatomic) NSString *typeName;
-@property (nonatomic) Class typeClass;
-@property (nonatomic) BOOL primitive;
+@property (nonatomic) BYType *type;
 @property (nonatomic) BOOL readonly;
-
-+ (BYProperty *)propertyFromObjcLine:(NSString *)text;
 
 @end

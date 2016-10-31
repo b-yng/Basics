@@ -19,6 +19,9 @@
 		EB0BF6101DC104780031A4A7 /* BYProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF60C1DC104780031A4A7 /* BYProperty.m */; };
 		EB0BF6111DC104780031A4A7 /* BYSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */; };
 		EB0BF6141DC104880031A4A7 /* NSString+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF6131DC104880031A4A7 /* NSString+Tools.m */; };
+		EB430E111DC703050021CC1F /* BYMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = EB430E101DC703050021CC1F /* BYMethod.m */; };
+		EB430E141DC704200021CC1F /* BYObjcParser.m in Sources */ = {isa = PBXBuildFile; fileRef = EB430E131DC704200021CC1F /* BYObjcParser.m */; };
+		EBFF1FCE1DC7085B005A6B3D /* BYType.m in Sources */ = {isa = PBXBuildFile; fileRef = EBFF1FCD1DC7085B005A6B3D /* BYType.m */; };
 		EBFF87311DC6BC9C00CB80FD /* BYCommandInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +74,12 @@
 		EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYSourceInfo.m; sourceTree = "<group>"; };
 		EB0BF6121DC104880031A4A7 /* NSString+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Tools.h"; sourceTree = "<group>"; };
 		EB0BF6131DC104880031A4A7 /* NSString+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Tools.m"; sourceTree = "<group>"; };
+		EB430E0F1DC703050021CC1F /* BYMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYMethod.h; sourceTree = "<group>"; };
+		EB430E101DC703050021CC1F /* BYMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYMethod.m; sourceTree = "<group>"; };
+		EB430E121DC704200021CC1F /* BYObjcParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYObjcParser.h; sourceTree = "<group>"; };
+		EB430E131DC704200021CC1F /* BYObjcParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYObjcParser.m; sourceTree = "<group>"; };
+		EBFF1FCC1DC7085B005A6B3D /* BYType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYType.h; sourceTree = "<group>"; };
+		EBFF1FCD1DC7085B005A6B3D /* BYType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYType.m; sourceTree = "<group>"; };
 		EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYCommandInfo.h; sourceTree = "<group>"; };
 		EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYCommandInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,8 +159,14 @@
 				EB0BF6081DC104780031A4A7 /* BYGenerator.h */,
 				EB0BF6091DC104780031A4A7 /* BYObjcGenerator.h */,
 				EB0BF60A1DC104780031A4A7 /* BYObjcGenerator.m */,
+				EB430E121DC704200021CC1F /* BYObjcParser.h */,
+				EB430E131DC704200021CC1F /* BYObjcParser.m */,
 				EB0BF60B1DC104780031A4A7 /* BYProperty.h */,
 				EB0BF60C1DC104780031A4A7 /* BYProperty.m */,
+				EB430E0F1DC703050021CC1F /* BYMethod.h */,
+				EB430E101DC703050021CC1F /* BYMethod.m */,
+				EBFF1FCC1DC7085B005A6B3D /* BYType.h */,
+				EBFF1FCD1DC7085B005A6B3D /* BYType.m */,
 				EB0BF60D1DC104780031A4A7 /* BYSourceInfo.h */,
 				EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */,
 				EB0BF6121DC104880031A4A7 /* NSString+Tools.h */,
@@ -287,9 +302,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				EBFF87311DC6BC9C00CB80FD /* BYCommandInfo.m in Sources */,
+				EB430E111DC703050021CC1F /* BYMethod.m in Sources */,
+				EB430E141DC704200021CC1F /* BYObjcParser.m in Sources */,
 				EB0BF6111DC104780031A4A7 /* BYSourceInfo.m in Sources */,
 				EB0BF6141DC104880031A4A7 /* NSString+Tools.m in Sources */,
 				EB0BF60F1DC104780031A4A7 /* BYObjcGenerator.m in Sources */,
+				EBFF1FCE1DC7085B005A6B3D /* BYType.m in Sources */,
 				EB0BF5F21DC1041F0031A4A7 /* SourceEditorExtension.m in Sources */,
 				EB0BF5F51DC1041F0031A4A7 /* SourceEditorCommand.m in Sources */,
 				EB0BF6101DC104780031A4A7 /* BYProperty.m in Sources */,

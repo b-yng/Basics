@@ -13,7 +13,7 @@ typedef NS_ENUM(NSUInteger, BYCommand) {
     BYCommandIsEquals,
     BYCommandNSCopying,
     BYCommandDeleteLines,
-    BYCommandInterface
+    BYCommandMethodSignature
 };
 
 @interface BYCommandInfo : NSObject

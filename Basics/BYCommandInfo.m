@@ -8,11 +8,6 @@
 
 #import "BYCommandInfo.h"
 
-static NSString * const BYCommandNameIsEquals = @"isEquals";
-static NSString * const BYCommandNameNSCopying = @"NSCopying";
-static NSString * const BYCommandNameDeleteLines = @"Delete Lines";
-static NSString * const BYCommandNameInterface = @"Interface";
-
 @interface BYCommandInfo ()
 @property (class, readonly) NSDictionary<NSString*, NSNumber*> *nameDictionary;
 @end
@@ -46,7 +41,7 @@ static NSString * const BYCommandNameInterface = @"Interface";
         nameDictionary = @{NSLocalizedString(@"isEquals", @"isEquals") : @(BYCommandIsEquals),
                            NSLocalizedString(@"NSCopying", @"NSCopying") : @(BYCommandNSCopying),
                            NSLocalizedString(@"Delete Lines", @"Delete Lines") : @(BYCommandDeleteLines),
-                           NSLocalizedString(@"Interface", @"Interface") : @(BYCommandInterface)};
+                           NSLocalizedString(@"Method Signature", @"Method Signature") : @(BYCommandMethodSignature)};
     });
     return nameDictionary;
 }
