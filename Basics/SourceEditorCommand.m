@@ -39,7 +39,8 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     }
     
     // get command
-    NSString *commandName = [invocation.commandIdentifier pathExtension];
+    NSCharacterSet *dotCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"."];
+    NSString *commandName = [invocation.commandIdentifier componentsSeparatedByCharactersInSet:dotCharacterSet].lastObject;
     BYCommand command = [BYCommandInfo commandFromName:commandName];
     
     switch (command) {
@@ -56,6 +57,8 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
             [self handleMethodSignatureCommand:buffer completion:completionHandler];
             break;
         case BYCommandUnknown:
+            NSAssert(false, @"Unknown command; id=%@", invocation.commandIdentifier);
+            completionHandler(nil);
             break;
     }
 }
@@ -63,6 +66,8 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 #pragma mark - Command Handlers
 
 - (void)handleDeleteLinesCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+    XCSourceTextPosition finalSelection = XCSourceTextPositionMake(buffer.selections.firstObject.start.line, 0);
+    
     // delete selection
     for (XCSourceTextRange *selection in buffer.selections) {
         NSInteger startLine = selection.start.line;
@@ -71,11 +76,9 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     }
     
     // clear selection
-    XCSourceTextRange *firstSelection = buffer.selections.firstObject;
-    firstSelection.start = XCSourceTextPositionMake(firstSelection.start.line, 0);
-    firstSelection.end = firstSelection.start;
+    XCSourceTextRange *textRange = [[XCSourceTextRange alloc] initWithStart:finalSelection end:finalSelection];
     [buffer.selections removeAllObjects];
-    [buffer.selections addObject:firstSelection];
+    [buffer.selections addObject:textRange];
     
     completionHandler(nil);
 }

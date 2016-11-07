@@ -182,18 +182,14 @@
     __block NSMutableArray *lines = [[NSMutableArray alloc] init];
     
     [methods enumerateObjectsUsingBlock:^(BYMethod * _Nonnull method, NSUInteger idx, BOOL * _Nonnull stop) {
-        BOOL addNewlinePrefix = idx > 0;
-        NSString *closedSignature;
-        
-        if (addNewlinePrefix) {
-            closedSignature = [NSString stringWithFormat:@"\n%@;", method.signature];
-        } else {
-            closedSignature = [NSString stringWithFormat:@"%@;", method.signature];
-        }
-        
+        NSString *closedSignature = [NSString stringWithFormat:@"%@;", method.signature];
         [lines addObject:closedSignature];
+        
+        if (idx < methods.count - 1) {
+            [lines addObject:@"\n"];
+        }
     }];
-    
+
     return lines;
 }
 

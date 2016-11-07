@@ -93,6 +93,7 @@
         };
         
         // get signature
+        // TODO: what if user didn't include { or ; in selection?
         NSString *signature = nil;
         BOOL foundSignature = [signatureScanner scanUpToString:@"{" intoString:&signature];
         if (!foundSignature) {
