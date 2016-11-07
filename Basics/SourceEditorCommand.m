@@ -19,6 +19,8 @@
 
 static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 
+// TODO: rename Fundamentals?
+
 @interface SourceEditorCommand ()
 @end
 
@@ -149,7 +151,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     NSString *copiedContent = [self contentFromPasteboard];
     
     // parse methods
-    NSArray<BYMethod*> *methods = [self methodsFromText:copiedContent];
+    NSArray<BYMethod*> *methods = [BYObjcParser parseMethodsFromText:copiedContent];
     
     // generate text from methods
     id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
@@ -177,23 +179,6 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     }];
     
     return properties;
-}
-
-- (NSArray<BYMethod*> *)methodsFromText:(NSString *)text {
-    NSMutableArray<BYMethod*> *methods = [[NSMutableArray alloc] init];
-    if (text == nil || text.length == 0) {
-        return methods;
-    }
-    
-    // TODO: multiline support. Pass in scanner
-    [text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
-        BYMethod *method = [BYObjcParser parseMethodFromLine:line];
-        if (method != nil) {
-            [methods addObject:method];
-        }
-    }];
-    
-    return methods;
 }
 
 - (NSString *)classNameFromText:(NSString *)text sourceLanguage:(BYSourceLanguage)sourceLanguage {

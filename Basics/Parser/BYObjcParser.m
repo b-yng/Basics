@@ -7,6 +7,7 @@
 //
 
 #import "BYObjcParser.h"
+#import "NSScanner+Tools.h"
 
 @implementation BYObjcParser
 
@@ -47,47 +48,76 @@
     return property;
 }
 
-// TODO: multiline support
-+ (BYMethod *)parseMethodFromLine:(NSString *)line {
-    if (line == nil || line.length == 0) return nil;
++ (NSArray<BYMethod*> *)parseMethodsFromText:(NSString *)text {
+    NSMutableArray<BYMethod*> *methods = [[NSMutableArray alloc] init];
     
-    NSScanner *scanner = [[NSScanner alloc] initWithString:line];
-    BOOL isInstanceMethod = [scanner scanString:@"-" intoString:nil];
-    BOOL isClassMethod = NO;
-    if (!isInstanceMethod) {
-        isClassMethod = [scanner scanString:@"+" intoString:nil];
-        if (!isClassMethod) return nil;
+    NSScanner *scanner = [[NSScanner alloc] initWithString:text];
+    NSScanner *signatureScanner = [[NSScanner alloc] initWithString:text];
+    
+    if (scanner == nil || scanner.isAtEnd) return methods;
+    
+    while (!scanner.isAtEnd) {
+        
+        BOOL isInstanceMethod = [scanner scanString:@"-" intoString:nil];
+        BOOL isClassMethod = NO;
+        if (!isInstanceMethod) {
+            isClassMethod = [scanner scanString:@"+" intoString:nil];
+            if (!isClassMethod) {
+                [scanner scanLine];
+                signatureScanner.scanLocation = scanner.scanLocation;
+                continue;
+            }
+        }
+        
+        BOOL isMethodStartSyntax = [scanner scanString:@"(" intoString:nil];
+        if (!isMethodStartSyntax) {
+            [scanner scanLine];
+            signatureScanner.scanLocation = scanner.scanLocation;
+            continue;
+        }
+        
+        // get return type
+        NSString *returnTypeText = nil;
+        BOOL foundReturnType = [scanner scanUpToString:@")" intoString:&returnTypeText];
+        if (!foundReturnType) {
+            [scanner scanLine];
+            signatureScanner.scanLocation = scanner.scanLocation;
+            continue;
+        }
+        
+        BYType *returnType = [self parseTypeFromScanner:[[NSScanner alloc] initWithString:returnTypeText]];
+        if (returnType == nil) {
+            [scanner scanLine];
+            signatureScanner.scanLocation = scanner.scanLocation;
+            continue;
+        };
+        
+        // get signature
+        NSString *signature = nil;
+        BOOL foundSignature = [signatureScanner scanUpToString:@"{" intoString:&signature];
+        if (!foundSignature) {
+            foundSignature = [signatureScanner scanUpToString:@";" intoString:&signature];
+            if (!foundSignature) {
+                [scanner scanLine];
+                signatureScanner.scanLocation = scanner.scanLocation;
+                continue;
+            }
+        }
+        
+        signature = [signature stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        BYMethod *method = [[BYMethod alloc] init];
+        method.signature = signature;
+        method.returnType = returnType;
+        method.isClassMethod = isClassMethod;
+        [methods addObject:method];
+        
+        // flush remaining line & keep signature scanner location in sync with scanner location
+        [scanner scanLine];
+        signatureScanner.scanLocation = scanner.scanLocation;
     }
     
-    BOOL isMethodStartSyntax = [scanner scanString:@"(" intoString:nil];
-    if (!isMethodStartSyntax) return nil;
-    
-    // get return type
-    NSString *returnTypeText = nil;
-    BOOL foundReturnType = [scanner scanUpToString:@")" intoString:&returnTypeText];
-    if (!foundReturnType) return nil;
-    
-    BYType *returnType = [self parseTypeFromScanner:[[NSScanner alloc] initWithString:returnTypeText]];
-    if (returnType == nil) return nil;
-    
-    // get signature
-    scanner = [[NSScanner alloc] initWithString:line];
-    
-    NSString *signature = nil;
-    BOOL foundSignature = [scanner scanUpToString:@"{" intoString:&signature];
-    if (!foundSignature) {
-        foundSignature = [scanner scanUpToString:@";" intoString:&signature];
-        if (!foundSignature) return nil;
-    }
-    
-    signature = [signature stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    
-    BYMethod *method = [[BYMethod alloc] init];
-    method.signature = signature;
-    method.returnType = returnType;
-    method.isClassMethod = isClassMethod;
-    
-    return method;
+    return methods;
 }
 
 #pragma mark - Helpers

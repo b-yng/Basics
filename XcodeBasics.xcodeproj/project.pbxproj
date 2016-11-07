@@ -21,7 +21,8 @@
 		EB0BF5F91DC1041F0031A4A7 /* Basics.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = EB0BF5E91DC1041F0031A4A7 /* Basics.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EB0BF60F1DC104780031A4A7 /* BYObjcGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF60A1DC104780031A4A7 /* BYObjcGenerator.m */; };
 		EB0BF6111DC104780031A4A7 /* BYSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */; };
-		EB0BF6141DC104880031A4A7 /* NSString+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = EB0BF6131DC104880031A4A7 /* NSString+Tools.m */; };
+		EBC67BAB1DD01ABD0092C1CE /* NSScanner+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC67BA81DD01ABD0092C1CE /* NSScanner+Tools.m */; };
+		EBC67BAC1DD01ABD0092C1CE /* NSString+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC67BAA1DD01ABD0092C1CE /* NSString+Tools.m */; };
 		EBFF87311DC6BC9C00CB80FD /* BYCommandInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */; };
 /* End PBXBuildFile section */
 
@@ -78,8 +79,10 @@
 		EB0BF60A1DC104780031A4A7 /* BYObjcGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYObjcGenerator.m; sourceTree = "<group>"; };
 		EB0BF60D1DC104780031A4A7 /* BYSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYSourceInfo.h; sourceTree = "<group>"; };
 		EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYSourceInfo.m; sourceTree = "<group>"; };
-		EB0BF6121DC104880031A4A7 /* NSString+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Tools.h"; sourceTree = "<group>"; };
-		EB0BF6131DC104880031A4A7 /* NSString+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Tools.m"; sourceTree = "<group>"; };
+		EBC67BA71DD01ABD0092C1CE /* NSScanner+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSScanner+Tools.h"; path = "Categories/NSScanner+Tools.h"; sourceTree = "<group>"; };
+		EBC67BA81DD01ABD0092C1CE /* NSScanner+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSScanner+Tools.m"; path = "Categories/NSScanner+Tools.m"; sourceTree = "<group>"; };
+		EBC67BA91DD01ABD0092C1CE /* NSString+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Tools.h"; path = "Categories/NSString+Tools.h"; sourceTree = "<group>"; };
+		EBC67BAA1DD01ABD0092C1CE /* NSString+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Tools.m"; path = "Categories/NSString+Tools.m"; sourceTree = "<group>"; };
 		EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYCommandInfo.h; sourceTree = "<group>"; };
 		EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYCommandInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -169,7 +172,9 @@
 		EB0BF5ED1DC1041F0031A4A7 /* Basics */ = {
 			isa = PBXGroup;
 			children = (
+				EBC67BA61DD01AA70092C1CE /* Categories */,
 				EB02A4871DC7181500D0BE13 /* Parser */,
+				EB0BF5EE1DC1041F0031A4A7 /* Supporting Files */,
 				EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */,
 				EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */,
 				EB0BF6081DC104780031A4A7 /* BYGenerator.h */,
@@ -177,14 +182,11 @@
 				EB0BF60A1DC104780031A4A7 /* BYObjcGenerator.m */,
 				EB0BF60D1DC104780031A4A7 /* BYSourceInfo.h */,
 				EB0BF60E1DC104780031A4A7 /* BYSourceInfo.m */,
-				EB0BF6121DC104880031A4A7 /* NSString+Tools.h */,
-				EB0BF6131DC104880031A4A7 /* NSString+Tools.m */,
 				EB0BF5F01DC1041F0031A4A7 /* SourceEditorExtension.h */,
 				EB0BF5F11DC1041F0031A4A7 /* SourceEditorExtension.m */,
 				EB0BF5F31DC1041F0031A4A7 /* SourceEditorCommand.h */,
 				EB0BF5F41DC1041F0031A4A7 /* SourceEditorCommand.m */,
 				EB0BF5F61DC1041F0031A4A7 /* Info.plist */,
-				EB0BF5EE1DC1041F0031A4A7 /* Supporting Files */,
 			);
 			path = Basics;
 			sourceTree = "<group>";
@@ -195,6 +197,17 @@
 				EB0BF5EF1DC1041F0031A4A7 /* Basics.entitlements */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EBC67BA61DD01AA70092C1CE /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				EBC67BA71DD01ABD0092C1CE /* NSScanner+Tools.h */,
+				EBC67BA81DD01ABD0092C1CE /* NSScanner+Tools.m */,
+				EBC67BA91DD01ABD0092C1CE /* NSString+Tools.h */,
+				EBC67BAA1DD01ABD0092C1CE /* NSString+Tools.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -312,11 +325,12 @@
 				EBFF87311DC6BC9C00CB80FD /* BYCommandInfo.m in Sources */,
 				EB0BF6111DC104780031A4A7 /* BYSourceInfo.m in Sources */,
 				EB02A4901DC7186200D0BE13 /* BYMethod.m in Sources */,
-				EB0BF6141DC104880031A4A7 /* NSString+Tools.m in Sources */,
 				EB02A4921DC7186200D0BE13 /* BYProperty.m in Sources */,
 				EB0BF60F1DC104780031A4A7 /* BYObjcGenerator.m in Sources */,
 				EB02A4931DC7186200D0BE13 /* BYType.m in Sources */,
 				EB0BF5F21DC1041F0031A4A7 /* SourceEditorExtension.m in Sources */,
+				EBC67BAC1DD01ABD0092C1CE /* NSString+Tools.m in Sources */,
+				EBC67BAB1DD01ABD0092C1CE /* NSScanner+Tools.m in Sources */,
 				EB0BF5F51DC1041F0031A4A7 /* SourceEditorCommand.m in Sources */,
 				EB02A4911DC7186200D0BE13 /* BYObjcParser.m in Sources */,
 			);

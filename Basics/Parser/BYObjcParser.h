@@ -14,6 +14,6 @@
 
 + (BYProperty *)parsePropertyFromLine:(NSString *)line;
 
-+ (BYMethod *)parseMethodFromLine:(NSString *)line;
++ (NSArray<BYMethod*> *)parseMethodsFromText:(NSString *)text;
 
 @end

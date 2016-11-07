@@ -132,6 +132,7 @@
     
     [properties enumerateObjectsUsingBlock:^(BYProperty * _Nonnull property, NSUInteger idx, BOOL * _Nonnull stop) {
         // ignore readonly properties
+        // TODO: don't do this
         if (property.readonly) {
             return;
         }
