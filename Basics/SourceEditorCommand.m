@@ -71,7 +71,13 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     // delete selection
     for (XCSourceTextRange *selection in buffer.selections) {
         NSInteger startLine = selection.start.line;
-        NSRange deleteRange = NSMakeRange(startLine, MIN(selection.end.line + 1 - startLine, buffer.lines.count - startLine));
+        NSInteger length = selection.end.line - startLine;
+        if (selection.end.column > 0) { // if selection is the entire line, end.line is the next line & column is 0. Handle this case
+            length++;
+        }
+        length = MAX(length, 1);    // if selection is just the cursor at the begininning of the line, selection.start == selection.end. We still want length=1
+        length = MIN(length, buffer.lines.count - startLine);
+        NSRange deleteRange = NSMakeRange(startLine, length);
         [buffer.lines removeObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:deleteRange]];
     }
     
