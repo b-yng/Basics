@@ -100,10 +100,17 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     // parse properties
     NSArray<BYProperty*> *properties = [self propertiesFromText:copiedContent];
     
+    // get class name
+    NSString *className = [self classNameFromText:buffer.completeBuffer sourceLanguage:sourceInfo.sourceLanguage];
+    if (className == nil) {
+        completionHandler([self errorClassNameNotFound]);
+        return;
+    }
+    
     // generate text from properties
     id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
     
-    NSMutableArray<NSString*> *lines = [textGenerator generateIsEquals:properties];
+    NSMutableArray<NSString*> *lines = [textGenerator generateIsEquals:properties className:className];
     [lines addObject:@"\n"];
     [lines addObjectsFromArray:[textGenerator generateHash:properties]];
     

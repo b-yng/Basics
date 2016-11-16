@@ -30,24 +30,22 @@
 
 #pragma mark - Public
 
-- (NSMutableArray<NSString*> *)generateIsEquals:(NSArray<BYProperty*> *)properties {
+- (NSMutableArray<NSString*> *)generateIsEquals:(NSArray<BYProperty*> *)properties className:(NSString *)className {
     __block NSMutableArray *lines = [[NSMutableArray alloc] init];
     
-    [lines addObject:@"- (BOOL)isEqual:(id)object {"];
-    [lines addObject:IND(@"if (object == nil)", 1)];
+    [lines addObject:@"- (BOOL)isEqual:(id)obj {"];
+    [lines addObject:IND(@"if (obj == nil)", 1)];
     [lines addObject:IND(@"return NO;", 2)];
-    [lines addObject:IND(@"if (self == object)", 1)];
+    [lines addObject:IND(@"if (self == obj)", 1)];
     [lines addObject:IND(@"return YES;", 2)];
-    [lines addObject:IND(@"if (![object isKindOfClass:[self class]])", 1)];
+    [lines addObject:IND(@"if (![obj isKindOfClass:[self class]])", 1)];
     [lines addObject:IND(@"return NO;", 2)];
+    
+    NSString *typedObject = [NSString stringWithFormat:@"%@ *other = obj;", className];
+    [lines addObject:IND(typedObject, 1)];
     [lines addObject:@"\n"];
     
     [properties enumerateObjectsUsingBlock:^(BYProperty * _Nonnull property, NSUInteger idx, BOOL * _Nonnull stop) {
-        // ignore readonly properties
-        if (property.readonly) {
-            return;
-        }
-        
         NSMutableString *lineText = [[NSMutableString alloc] init];
         if (idx == 0) {
             [lineText appendString:IND(@"return ", 1)];
@@ -58,10 +56,10 @@
         
         NSString *name = property.name;
         if (!property.type.isPointer) {
-            [lineText appendString:[NSString stringWithFormat:@"_%@ == [object %@]", name, name]];
+            [lineText appendString:[NSString stringWithFormat:@"_%@ == [other %@]", name, name]];
         }
         else {
-            [lineText appendString:[NSString stringWithFormat:@"(_%@ == [object %@] || [_%@ isEqual:[object %@]])", name, name, name, name]];
+            [lineText appendString:[NSString stringWithFormat:@"(_%@ == [other %@] || [_%@ isEqual:[other %@]])", name, name, name, name]];
         }
         
         if (idx == properties.count - 1) {
