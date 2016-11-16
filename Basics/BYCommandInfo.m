@@ -15,7 +15,7 @@
 @implementation BYCommandInfo
 
 + (BYCommand)commandFromName:(NSString *)name {
-    BYCommand command = BYCommandUnknown;
+    BYCommand command = BYCommandNone;
     NSNumber *commandWrapped = self.nameDictionary[name];
     if (commandWrapped != nil) {
         command = commandWrapped.unsignedIntegerValue;
@@ -40,8 +40,9 @@
     dispatch_once(&onceToken, ^{
         nameDictionary = @{NSLocalizedString(@"isEquals", @"isEquals") : @(BYCommandIsEquals),
                            NSLocalizedString(@"NSCopying", @"NSCopying") : @(BYCommandNSCopying),
-                           NSLocalizedString(@"Delete Lines", @"Delete Lines") : @(BYCommandDeleteLines),
-                           NSLocalizedString(@"Method Signature", @"Method Signature") : @(BYCommandMethodSignature)};
+                           NSLocalizedString(@"Method", @"Method") : @(BYCommandMethodSignature),
+                           NSLocalizedString(@"Delete Lines", @"Delete Lines") : @(BYCommandDeleteLines)
+                           };
     });
     return nameDictionary;
 }

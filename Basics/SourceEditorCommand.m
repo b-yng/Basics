@@ -56,8 +56,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
         case BYCommandMethodSignature:
             [self handleMethodSignatureCommand:buffer completion:completionHandler];
             break;
-        case BYCommandUnknown:
-            NSAssert(false, @"Unknown command; id=%@", invocation.commandIdentifier);
+        case BYCommandNone:
             completionHandler(nil);
             break;
     }
