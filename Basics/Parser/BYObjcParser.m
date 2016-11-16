@@ -93,18 +93,21 @@
         };
         
         // get signature
-        // TODO: what if user didn't include { or ; in selection?
-        NSString *signature = nil;
-        BOOL foundSignature = [signatureScanner scanUpToString:@"{" intoString:&signature];
-        if (!foundSignature) {
-            foundSignature = [signatureScanner scanUpToString:@";" intoString:&signature];
-            if (!foundSignature) {
-                [scanner scanLine];
-                signatureScanner.scanLocation = scanner.scanLocation;
-                continue;
-            }
+        static NSCharacterSet *signatureCloseSet = nil;
+        if (signatureCloseSet == nil) {
+            signatureCloseSet = [NSCharacterSet characterSetWithCharactersInString:@"{;"];
         }
         
+        NSString *signature = nil;
+        
+        BOOL foundSignature = [signatureScanner scanUpToCharactersFromSet:signatureCloseSet intoString:&signature];
+        if (!foundSignature) {
+            [scanner scanLine];
+            signatureScanner.scanLocation = scanner.scanLocation;
+            continue;
+        }
+        
+        // cleanup signature
         signature = [signature stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         
         BYMethod *method = [[BYMethod alloc] init];
@@ -150,7 +153,7 @@
     }
     
     BOOL isPointer = [scanner scanString:@"*" intoString:nil];
-    type.primitive = !isPointer;
+    type.pointer = isPointer;
     
     return type;
 }

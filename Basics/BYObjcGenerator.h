@@ -17,4 +17,6 @@
 
 - (instancetype)initWithTabWidth:(NSInteger)tabWidth;
 
+- (NSMutableArray<NSString*> *)generateMethodBoilerplate:(NSArray<BYMethod*> *)methods;
+
 @end

@@ -163,8 +163,15 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     NSArray<BYMethod*> *methods = [BYObjcParser parseMethodsFromText:copiedContent];
     
     // generate text from methods
-    id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
-    NSArray<NSString*> *lines = [textGenerator generateMethodSignatures:methods];
+    BYObjcGenerator *textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
+    NSArray<NSString*> *lines;
+    
+    if (sourceInfo.fileType == BYSourceFileTypeHeader) {
+        lines = [textGenerator generateMethodSignatures:methods];
+    }
+    else {
+        lines = [textGenerator generateMethodBoilerplate:methods];
+    }
     
     // insert lines into buffer
     [self insertLinesIntoBuffer:buffer lines:lines];

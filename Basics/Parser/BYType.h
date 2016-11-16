@@ -13,6 +13,6 @@
 @property (nonatomic) NSString *name;
 @property (nonatomic) Class typeClass;
 @property (nonatomic) BYType *generic;
-@property (nonatomic) BOOL primitive;
+@property (nonatomic, getter=isPointer) BOOL pointer;
 
 @end

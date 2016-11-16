@@ -83,6 +83,7 @@
 		EBC67BA81DD01ABD0092C1CE /* NSScanner+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSScanner+Tools.m"; path = "Categories/NSScanner+Tools.m"; sourceTree = "<group>"; };
 		EBC67BA91DD01ABD0092C1CE /* NSString+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Tools.h"; path = "Categories/NSString+Tools.h"; sourceTree = "<group>"; };
 		EBC67BAA1DD01ABD0092C1CE /* NSString+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Tools.m"; path = "Categories/NSString+Tools.m"; sourceTree = "<group>"; };
+		EBCFD2A91DD8D48D00D3662C /* BYMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BYMacros.h; sourceTree = "<group>"; };
 		EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYCommandInfo.h; sourceTree = "<group>"; };
 		EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYCommandInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -178,6 +179,7 @@
 				EBFF872F1DC6BC9C00CB80FD /* BYCommandInfo.h */,
 				EBFF87301DC6BC9C00CB80FD /* BYCommandInfo.m */,
 				EB0BF6081DC104780031A4A7 /* BYGenerator.h */,
+				EBCFD2A91DD8D48D00D3662C /* BYMacros.h */,
 				EB0BF6091DC104780031A4A7 /* BYObjcGenerator.h */,
 				EB0BF60A1DC104780031A4A7 /* BYObjcGenerator.m */,
 				EB0BF60D1DC104780031A4A7 /* BYSourceInfo.h */,

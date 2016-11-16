@@ -7,6 +7,8 @@
 //
 
 #import "BYObjcGenerator.h"
+
+#import "BYMacros.h"
 #import "NSString+Tools.h"
 
 #define IND(_text, _indent) [self indent:(_text) by:(_indent)]
@@ -55,7 +57,7 @@
         }
         
         NSString *name = property.name;
-        if (property.type.primitive) {
+        if (!property.type.isPointer) {
             [lineText appendString:[NSString stringWithFormat:@"_%@ == [object %@]", name, name]];
         }
         else {
@@ -97,7 +99,7 @@
         }
         
         NSString *name = property.name;
-        if (property.type.primitive) {
+        if (!property.type.isPointer) {
             // wrap primitives in NSNumber for hash method
             [lineText appendString:[NSString stringWithFormat:@"@(_%@).hash", name]];
         }
@@ -139,7 +141,7 @@
         
         NSString *name = property.name;
         
-        if (property.type.primitive) {
+        if (!property.type.isPointer) {
             NSString *copyLine = [NSString stringWithFormat:@"clone.%@ = _%@;", name, name];
             [lines addObject:IND(copyLine, 1)];
         }
@@ -190,6 +192,60 @@
         }
     }];
 
+    return lines;
+}
+
+- (NSMutableArray<NSString*> *)generateMethodBoilerplate:(NSArray<BYMethod*> *)methods {
+    __block NSMutableArray *lines = [[NSMutableArray alloc] init];
+    
+    [methods enumerateObjectsUsingBlock:^(BYMethod * _Nonnull method, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *closedSignature = [NSString stringWithFormat:@"%@ {", method.signature];
+        [lines addObject:closedSignature];
+        
+        NSString *returnValue = nil;
+        
+        sSwitch(method.returnType.name) {
+            sCase(@"void") {
+                returnValue = nil;
+                break;
+            }
+            sCase(@"BOOL") {
+                returnValue = @"NO";
+                break;
+            }
+            sCases(@"NSInteger", @"NSUInteger", @"NSInteger") {
+                returnValue = @"0";
+                break;
+            }
+            sCases(@"CGFloat", @"float") {
+                returnValue = @"0.0f";
+                break;
+            }
+            sCase(@"double") {
+                returnValue = @"0.0";
+                break;
+            }
+            sDefault {
+                returnValue = @"nil";
+                break;
+            }
+        }
+        
+        if (returnValue != nil) {
+            NSString *returnStatement = [NSString stringWithFormat:@"return %@;", returnValue];
+            [lines addObject:[self indent:returnStatement by:1]];
+        }
+        else {
+            [lines addObject:@"\n"];
+        }
+        
+        [lines addObject:@"}"];
+        
+        if (idx < methods.count - 1) {
+            [lines addObject:@"\n"];
+        }
+    }];
+    
     return lines;
 }
 
