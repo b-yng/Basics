@@ -85,11 +85,6 @@
     [lines addObject:@"- (NSUInteger)hash {"];
     
     [properties enumerateObjectsUsingBlock:^(BYProperty * _Nonnull property, NSUInteger idx, BOOL * _Nonnull stop) {
-        // ignore readonly properties
-        if (property.readonly) {
-            return;
-        }
-        
         NSMutableString *lineText = [[NSMutableString alloc] init];
         if (idx == 0) {
             [lineText appendString:IND(@"return ", 1)];
@@ -133,12 +128,6 @@
     [lines addObject:IND(initLine, 1)];
     
     [properties enumerateObjectsUsingBlock:^(BYProperty * _Nonnull property, NSUInteger idx, BOOL * _Nonnull stop) {
-        // ignore readonly properties
-        // TODO: don't do this
-        if (property.readonly) {
-            return;
-        }
-        
         NSString *name = property.name;
         
         if (!property.type.isPointer) {

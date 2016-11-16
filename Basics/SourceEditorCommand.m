@@ -19,8 +19,6 @@
 
 static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 
-// TODO: rename Fundamentals?
-
 @interface SourceEditorCommand ()
 @end
 
