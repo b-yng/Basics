@@ -30,9 +30,11 @@
 
 #pragma mark - Public
 
-- (NSMutableArray<NSString*> *)generateIsEquals:(NSArray<BYProperty*> *)properties className:(NSString *)className {
+- (NSMutableArray<NSString*> *)generateIsEqual:(NSArray<BYProperty*> *)properties className:(NSString *)className {
     __block NSMutableArray *lines = [[NSMutableArray alloc] init];
     
+    [lines addObject:@"#pragma mark - NSObject"];
+    [lines addObject:@"\n"];
     [lines addObject:@"- (BOOL)isEqual:(id)obj {"];
     [lines addObject:IND(@"if (obj == nil)", 1)];
     [lines addObject:IND(@"return NO;", 2)];

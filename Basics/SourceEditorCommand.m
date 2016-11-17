@@ -45,13 +45,13 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
         case BYCommandDeleteLines:
             [self handleDeleteLinesCommand:buffer completion:completionHandler];
             break;
-        case BYCommandIsEquals:
+        case BYCommandIsEqual:
             [self handleIsEqualsCommand:buffer completion:completionHandler];
             break;
         case BYCommandNSCopying:
             [self handleNSCopyingCommand:buffer completion:completionHandler];
             break;
-        case BYCommandMethodSignature:
+        case BYCommandMethod:
             [self handleMethodSignatureCommand:buffer completion:completionHandler];
             break;
         case BYCommandNone:
@@ -110,7 +110,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     // generate text from properties
     id<BYGenerator> textGenerator = [self textGeneratorForSourceLanguage:sourceInfo.sourceLanguage tabWidth:buffer.tabWidth];
     
-    NSMutableArray<NSString*> *lines = [textGenerator generateIsEquals:properties className:className];
+    NSMutableArray<NSString*> *lines = [textGenerator generateIsEqual:properties className:className];
     [lines addObject:@"\n"];
     [lines addObjectsFromArray:[textGenerator generateHash:properties]];
     

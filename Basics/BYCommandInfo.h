@@ -10,10 +10,10 @@
 
 typedef NS_ENUM(NSUInteger, BYCommand) {
     BYCommandNone,
-    BYCommandIsEquals,
+    BYCommandIsEqual,
     BYCommandNSCopying,
     BYCommandDeleteLines,
-    BYCommandMethodSignature
+    BYCommandMethod
 };
 
 @interface BYCommandInfo : NSObject

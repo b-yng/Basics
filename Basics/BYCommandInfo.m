@@ -38,9 +38,9 @@
     static NSDictionary *nameDictionary;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        nameDictionary = @{NSLocalizedString(@"isEquals", @"isEquals") : @(BYCommandIsEquals),
+        nameDictionary = @{NSLocalizedString(@"isEqual", @"isEqual") : @(BYCommandIsEqual),
                            NSLocalizedString(@"NSCopying", @"NSCopying") : @(BYCommandNSCopying),
-                           NSLocalizedString(@"Method", @"Method") : @(BYCommandMethodSignature),
+                           NSLocalizedString(@"Method", @"Method") : @(BYCommandMethod),
                            NSLocalizedString(@"Delete Lines", @"Delete Lines") : @(BYCommandDeleteLines)
                            };
     });

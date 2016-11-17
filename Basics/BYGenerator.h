@@ -13,7 +13,7 @@
 
 @protocol BYGenerator <NSObject>
 
-- (NSMutableArray<NSString*> *)generateIsEquals:(NSArray<BYProperty*> *)properties className:(NSString *)className;
+- (NSMutableArray<NSString*> *)generateIsEqual:(NSArray<BYProperty*> *)properties className:(NSString *)className;
 
 - (NSMutableArray<NSString*> *)generateHash:(NSArray<BYProperty*> *)properties;
 
