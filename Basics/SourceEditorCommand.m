@@ -98,7 +98,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     NSString *copiedContent = [self contentFromPasteboard];
     
     // parse properties
-    NSArray<BYProperty*> *properties = [self propertiesFromText:copiedContent];
+    NSArray<BYProperty*> *properties = [BYObjcParser parsePropertiesFromText:copiedContent];
     
     // get class name
     NSString *className = [self classNameFromText:buffer.completeBuffer sourceLanguage:sourceInfo.sourceLanguage];
@@ -132,7 +132,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     NSString *copiedContent = [self contentFromPasteboard];
     
     // parse properties
-    NSArray<BYProperty*> *properties = [self propertiesFromText:copiedContent];
+    NSArray<BYProperty*> *properties = [BYObjcParser parsePropertiesFromText:copiedContent];
     
     // get class name
     NSString *className = [self classNameFromText:buffer.completeBuffer sourceLanguage:sourceInfo.sourceLanguage];
@@ -184,22 +184,6 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 }
 
 #pragma mark - Helpers
-
-- (NSArray<BYProperty*> *)propertiesFromText:(NSString *)text {
-    NSMutableArray<BYProperty*> *properties = [[NSMutableArray alloc] init];
-    if (text == nil || text.length == 0) {
-        return properties;
-    }
-    
-    [text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
-        BYProperty *property = [BYObjcParser parsePropertyFromLine:line];
-        if (property != nil) {
-            [properties addObject:property];
-        }
-    }];
-    
-    return properties;
-}
 
 - (NSString *)classNameFromText:(NSString *)text sourceLanguage:(BYSourceLanguage)sourceLanguage {
     if (text == nil || text.length == 0) {

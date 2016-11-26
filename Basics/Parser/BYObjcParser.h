@@ -12,7 +12,7 @@
 
 @interface BYObjcParser : NSObject
 
-+ (BYProperty *)parsePropertyFromLine:(NSString *)line;
++ (NSArray<BYProperty*> *)parsePropertiesFromText:(NSString *)text;
 
 + (NSArray<BYMethod*> *)parseMethodsFromText:(NSString *)text;
 

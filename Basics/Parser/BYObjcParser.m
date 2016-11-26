@@ -11,41 +11,20 @@
 
 @implementation BYObjcParser
 
-+ (BYProperty *)parsePropertyFromLine:(NSString *)line {
-    if (line == nil || line.length == 0) return nil;
-    
-    NSScanner *scanner = [[NSScanner alloc] initWithString:line];
-    BOOL isProperty = [scanner scanString:@"@property" intoString:nil];
-    if (!isProperty) return nil;
-    
-    // parse attributes
-    BOOL readonly = NO;
-    BOOL hasAttributes = [scanner scanString:@"(" intoString:nil];
-    if (hasAttributes) {
-        NSString *attributes = nil;
-        BOOL foundAttributes = [scanner scanUpToString:@")" intoString:&attributes];
-        if (!foundAttributes) return nil;
-        
-        readonly = [attributes containsString:@"readonly"];
-        
-        [scanner scanString:@")" intoString:nil];
++ (NSArray<BYProperty*> *)parsePropertiesFromText:(NSString *)text {
+    NSMutableArray<BYProperty*> *properties = [[NSMutableArray alloc] init];
+    if (text == nil || text.length == 0) {
+        return properties;
     }
     
-    // parse property type
-    BYType *type = [self parseTypeFromScanner:scanner];
-    if (type == nil) return nil;
+    [text enumerateLinesUsingBlock:^(NSString * _Nonnull line, BOOL * _Nonnull stop) {
+        BYProperty *property = [self parsePropertyFromLine:line];
+        if (property != nil) {
+            [properties addObject:property];
+        }
+    }];
     
-    // parse property name
-    NSString *propertyName = nil;
-    BOOL foundName = [scanner scanUpToString:@";" intoString:&propertyName];
-    if (!foundName) return nil;
-    
-    BYProperty *property = [[BYProperty alloc] init];
-    property.name = propertyName;
-    property.readonly = readonly;
-    property.type = type;
-    
-    return property;
+    return properties;
 }
 
 + (NSArray<BYMethod*> *)parseMethodsFromText:(NSString *)text {
@@ -125,6 +104,44 @@
 }
 
 #pragma mark - Helpers
+
+
++ (BYProperty *)parsePropertyFromLine:(NSString *)line {
+    if (line == nil || line.length == 0) return nil;
+    
+    NSScanner *scanner = [[NSScanner alloc] initWithString:line];
+    BOOL isProperty = [scanner scanString:@"@property" intoString:nil];
+    if (!isProperty) return nil;
+    
+    // parse attributes
+    BOOL readonly = NO;
+    BOOL hasAttributes = [scanner scanString:@"(" intoString:nil];
+    if (hasAttributes) {
+        NSString *attributes = nil;
+        BOOL foundAttributes = [scanner scanUpToString:@")" intoString:&attributes];
+        if (!foundAttributes) return nil;
+        
+        readonly = [attributes containsString:@"readonly"];
+        
+        [scanner scanString:@")" intoString:nil];
+    }
+    
+    // parse property type
+    BYType *type = [self parseTypeFromScanner:scanner];
+    if (type == nil) return nil;
+    
+    // parse property name
+    NSString *propertyName = nil;
+    BOOL foundName = [scanner scanUpToString:@";" intoString:&propertyName];
+    if (!foundName) return nil;
+    
+    BYProperty *property = [[BYProperty alloc] init];
+    property.name = propertyName;
+    property.readonly = readonly;
+    property.type = type;
+    
+    return property;
+}
 
 + (BYType *)parseTypeFromScanner:(NSScanner *)scanner {
     // get type name

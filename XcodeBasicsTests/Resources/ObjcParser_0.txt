@@ -1,0 +1,20 @@
+
+#import <Foundation/Foundation.h>
+
+@interface BYAddress : NSObject <NSCopying>
+
+@property (nonatomic) NSString *street;
+@property (nonatomic) NSString *city;
+@property (nonatomic) NSString *state;
+@property (nonatomic) NSString *postalCode;
+@property (nonatomic) NSString *countryCode;
+
+- (instancetype)initWithJSON:(NSDictionary *)json;
+- (instancetype)initBlank;
+- (BOOL)isEmpty;
+- (NSString *)countryName;
+- (NSDictionary *)toJSON;
+- (NSString *)formattedStringValue;
+- (BOOL)isEqualToAddress:(BYAddress *)other;
+
+@end
