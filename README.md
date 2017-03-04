@@ -18,8 +18,9 @@ An Xcode extension that generates NSCopying, isEquals, hash, and more.
 1. [Download latest version](https://github.com/b-yng/Basics/releases/latest)
 2. Extract `XcodeBasics.app` to `Applications` folder
 3. Open & close `XcodeBasics.app`
-4. Open Xcode
-5. Use commands in Editor > Basics
+4. Enable the XcodeBasics extension in System Preferences > Extensions 
+5. Open Xcode
+6. Use commands in Editor > Basics
 
 ### Enable Basics
 <kbd>System Preferences</kbd> > <kbd>Extensions</kbd> > <kbd>Xocde Source Editor</kbd> > <kbd>Basics</kbd>
