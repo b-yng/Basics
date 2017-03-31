@@ -672,6 +672,7 @@
 				EB64F7FE1DEA4B3D00C20A44 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
