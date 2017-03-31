@@ -31,6 +31,9 @@ static NSString * const BYCommandIdPrefix = @"com.young.XcodeBasics";
 }
 
 - (NSDictionary<XCSourceEditorCommandDefinitionKey, id> *)definitionWithName:(NSString *)name key:(NSString *)key {
+    // If any command keys have spaces, Xcode throws an exception like:
+    // Command identifier 'com.young.XcodeBasics.Delete Lines' is not a legal RFC1034 identifier
+    key = [key stringByReplacingOccurrencesOfString:@" " withString:@""];
     return @{ XCSourceEditorCommandClassNameKey : @"SourceEditorCommand",
               XCSourceEditorCommandIdentifierKey : [NSString stringWithFormat:@"%@.%@", BYCommandIdPrefix, key],
               XCSourceEditorCommandNameKey : name };
