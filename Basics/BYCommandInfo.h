@@ -18,7 +18,9 @@ typedef NS_ENUM(NSUInteger, BYCommand) {
 
 @interface BYCommandInfo : NSObject
 
-+ (BYCommand)commandFromName:(NSString *)name;
++ (BYCommand)commandFromIdentifier:(NSString *)identifier;
+
++ (NSString *)identifierFromCommand:(BYCommand)command;
 
 + (NSString *)nameFromCommand:(BYCommand)command;
 

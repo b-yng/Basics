@@ -37,9 +37,7 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
     }
     
     // get command
-    NSCharacterSet *dotCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"."];
-    NSString *commandName = [invocation.commandIdentifier componentsSeparatedByCharactersInSet:dotCharacterSet].lastObject;
-    BYCommand command = [BYCommandInfo commandFromName:commandName];
+    BYCommand command = [BYCommandInfo commandFromIdentifier:invocation.commandIdentifier];
     
     switch (command) {
         case BYCommandDeleteLines:
