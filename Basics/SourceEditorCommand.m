@@ -43,6 +43,9 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
         case BYCommandDeleteLines:
             [self handleDeleteLinesCommand:buffer completion:completionHandler];
             break;
+        case BYCommandDuplicateLines:
+            [self handleDuplicateLinesCommand:buffer completion:completionHandler];
+            break;
         case BYCommandIsEqual:
             [self handleIsEqualsCommand:buffer completion:completionHandler];
             break;
@@ -59,6 +62,35 @@ static NSString *const GenErrorDomain = @"com.young.XcodeBasics";
 }
 
 #pragma mark - Command Handlers
+    
+- (void)handleDuplicateLinesCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
+    XCSourceTextPosition finalSelection = XCSourceTextPositionMake(buffer.selections.firstObject.start.line, 0);
+    
+    // duplicate selection
+    for (XCSourceTextRange *selection in buffer.selections) {
+        NSInteger startLine = selection.start.line;
+        NSInteger length = selection.end.line - startLine;
+        if (selection.end.column > 0) { // if selection is the entire line, end.line is the next line & column is 0. Handle this case
+            length++;
+        }
+        length = MAX(length, 1);    // if selection is just the cursor at the begininning of the line, selection.start == selection.end. We still want length=1
+        length = MIN(length, buffer.lines.count - startLine);
+        
+        NSRange sourceRange = NSMakeRange(startLine, length);
+        NSIndexSet *sourceIndexSet = [NSIndexSet indexSetWithIndexesInRange:sourceRange];
+        NSRange destRange = NSMakeRange(NSMaxRange(sourceRange), length);
+        NSIndexSet *destIndexSet = [NSIndexSet indexSetWithIndexesInRange:destRange];
+        NSArray<NSString*> *copiedLines = [buffer.lines objectsAtIndexes:sourceIndexSet];
+        [buffer.lines insertObjects:copiedLines atIndexes:destIndexSet];
+    }
+    
+    // clear selection
+    XCSourceTextRange *textRange = [[XCSourceTextRange alloc] initWithStart:finalSelection end:finalSelection];
+    [buffer.selections removeAllObjects];
+    [buffer.selections addObject:textRange];
+    
+    completionHandler(nil);
+}
 
 - (void)handleDeleteLinesCommand:(XCSourceTextBuffer *)buffer completion:(void (^)(NSError *nilOrError))completionHandler {
     XCSourceTextPosition finalSelection = XCSourceTextPositionMake(buffer.selections.firstObject.start.line, 0);

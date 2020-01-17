@@ -20,7 +20,8 @@ static NSString * const BYCommandIdPrefix = @"com.young.XcodeBasics";
     return @[[self definitionForCommand:BYCommandIsEqual],
              [self definitionForCommand:BYCommandNSCopying],
              [self definitionForCommand:BYCommandMethod],
-             [self definitionForCommand:BYCommandDeleteLines]];
+             [self definitionForCommand:BYCommandDeleteLines],
+             [self definitionForCommand:BYCommandDuplicateLines]];
 }
 
 #pragma mark - Helpers

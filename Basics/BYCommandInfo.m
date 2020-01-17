@@ -55,7 +55,8 @@
         nameDictionary = @{NSLocalizedString(@"isEqual", @"isEqual") : @(BYCommandIsEqual),
                            NSLocalizedString(@"NSCopying", @"NSCopying") : @(BYCommandNSCopying),
                            NSLocalizedString(@"Method", @"Method") : @(BYCommandMethod),
-                           NSLocalizedString(@"Delete Lines", @"Delete Lines") : @(BYCommandDeleteLines)
+                           NSLocalizedString(@"Delete Lines", @"Delete Lines") : @(BYCommandDeleteLines),
+                           NSLocalizedString(@"Duplicate Lines", @"Duplicate Lines") : @(BYCommandDuplicateLines)
                            };
     });
     return nameDictionary;

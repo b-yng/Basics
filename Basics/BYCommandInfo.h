@@ -13,6 +13,7 @@ typedef NS_ENUM(NSUInteger, BYCommand) {
     BYCommandIsEqual,
     BYCommandNSCopying,
     BYCommandDeleteLines,
+    BYCommandDuplicateLines,
     BYCommandMethod
 };
 
